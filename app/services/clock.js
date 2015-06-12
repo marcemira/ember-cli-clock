@@ -26,7 +26,8 @@ export default Ember.Object.extend({
     throw Error('The clock interval cannot be changed except during testing');
   }.observes('intervalTime'),
   tick: function() {
-    Ember.run(this, function() {
+
+    Ember.run.throttle(this, function() {
       var second = this.incrementProperty('second');
 
       if (second && (second % 60) === 0) {
@@ -46,7 +47,7 @@ export default Ember.Object.extend({
           }
         }
       }
-    });
+    }, this.get('intervalTime'));
   },
   willDestroy: function() {
     window.clearInterval(this.get('interval'));
